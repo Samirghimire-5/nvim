@@ -9,4 +9,25 @@ return {
 			})
 		end,
 	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				ensure_installed = {
+					"html",
+					"css",
+					"javascript",
+					"typescript",
+					"tsx",
+					"lua",
+				},
+				highlight = { enable = true },
+
+				autotag = {
+					enable = true,
+				},
+			})
+		end,
+	},
 }
