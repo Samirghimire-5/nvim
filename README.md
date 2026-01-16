@@ -64,8 +64,8 @@ Lazy.nvim will automatically install all plugins on first startup.
 **`jk`** Exit insert or visual mode (<Esc>)\
 **`jk`** Exit terminal mode\
 
-** haven't mentioned all the keybindings here, you can see all keybindings after cloning this config,
-inside config type :map this will list all of the keymaps including in which the keymaps are located.**
+**`haven't mentioned all the keybindings here, you can see all keybindings after cloning this config,
+inside config type :map this will list all of the keymaps including in which the keymaps are located.`**
 
 ---
 
