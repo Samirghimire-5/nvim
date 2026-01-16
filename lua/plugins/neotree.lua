@@ -37,7 +37,9 @@ return {
 			-- Keymaps
 			vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { desc = "Toggle Neo-tree" })
 			vim.keymap.set("n", "<leader>ft", ":Neotree focus<CR>", { desc = "Focus Neo-tree" })
-			-- vim.keymap.set("n", "<leader>,", "<c-w>p", { desc = "Focus Editor" })
+      -- i dont know why this focus editor doesnt works but you can use 
+      -- cltr + w + w to switch into prev windows when you are in file tree -_<.
+			-- vim.keymap.set("n", "<leader>,", "<C-w>p", { desc = "Focus Editor" })
 			vim.keymap.set("n", "<leader>bf", ":Neotree buffers<CR>", { desc = "Buffer list" })
 			vim.keymap.set("n", "<leader>gs", ":Neotree git_status<CR>", { desc = "Git status" })
 		end,

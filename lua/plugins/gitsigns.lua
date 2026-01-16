@@ -20,14 +20,22 @@ return {
 					vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
 				end
 
+				-- 1.) hunk changes (block of changes)
 				-- navigate changes
-				map("n", "nh", gs.next_hunk)
-				map("n", "ph", gs.prev_hunk)
-
+				map("n", "<leader>hn", gs.next_hunk)
+				map("n", "<leader>hp", gs.prev_hunk)
 				-- Preview / stage / discard
-				map("n", "<leader>vh", gs.preview_hunk)
-				map("n", "<leader>rh", gs.reset_hunk)
-				map("n", "<leader>sh", gs.stage_hunk)
+				map("n", "<leader>gp", gs.preview_hunk) -- g = git
+				map("n", "<leader>hs", gs.stage_hunk) -- hs - cause gs command already does git status
+				map("n", "<leader>hr", gs.reset_hunk)
+
+				-- 2.) line changes (single line change)
+				map("n", "<leader>rl", function() -- reset single line
+					gs.reset_hunk({ vim.fn.line("."), vim.fn.line(".") })
+				end)
+				map("v", "<leader>rl", function() -- reset selected lines
+					gs.reset_hunk({ vim.fn.line("v"), vim.fn.line(".") })
+				end)
 			end,
 		})
 

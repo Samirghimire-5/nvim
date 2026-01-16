@@ -62,7 +62,10 @@ Lazy.nvim will automatically install all plugins on first startup.
 **`<Tab>`**	Expand snippet / select next completion item\
 **`<S-Tab>`**	Jump to previous snippet position\
 **`jk`** Exit insert or visual mode (<Esc>)\
-**`jk`** Exit terminal mode
+**`jk`** Exit terminal mode\
+
+** haven't mentioned all the keybindings here, you can see all keybindings after cloning this config,
+inside config type :map this will list all of the keymaps including in which the keymaps are located.**
 
 ---
 
@@ -113,6 +116,8 @@ Lazy.nvim will automatically install all plugins on first startup.
   - telescope-ui-select.nvim
 
 - **Utilities**
+
+  - gitsigns.nvim
 
   - plenary.nvim
 
