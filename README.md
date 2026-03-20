@@ -53,7 +53,10 @@ Lazy.nvim will automatically install all plugins on first startup.
 
 # Keybindings
 **`<leader>e`**	Toggle Neo-tree file explorer\
+**`<leader>ff`**	Telescope Find normal files\
+**`<leader>fa`**	Telescope Find all files (eg: .env, .gitignore, etc)\
 **`<leader>ft`**	Focus Neo-tree\
+**`<leader>fe`**	Switch focus to window from Neo-tree\
 **`<leader>bf`**	Show buffer list\
 **`<leader>gs`**	Show Git status\
 **`gd`**	Go to definition (LSP)\

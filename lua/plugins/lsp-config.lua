@@ -31,6 +31,30 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
+      -- this below helps to add background color and rounded border in popups
+			vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+				border = "rounded",
+				max_width = 80,
+				max_height = 20,
+			})
+
+			vim.lsp.handlers["textDocument/signatureHelp"] =
+				vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
+			vim.diagnostic.config({
+				float = {
+					border = "rounded",
+					source = "always",
+				},
+			})
+
+			-- Set colors for floating windows (hover popup)
+			vim.cmd([[
+        highlight NormalFloat guibg=#1e1e2e guifg=#e5e7eb
+        highlight FloatBorder guifg=#89b4fa guibg=#1e1e2e
+        highlight FloatTitle guifg=#f9fafb guibg=#1e1e2e gui=bold
+      ]])
+
 			-- CAPABILITIES:
 			-- This tells the Language Servers what Neovim is capable of.
 			-- By adding 'cmp_nvim_lsp', we tell the server: "Hey, I have a completion engine,

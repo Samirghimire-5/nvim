@@ -6,3 +6,4 @@ vim.cmd("set shiftwidth=2")
 
 vim.opt.number = true -- show line number
 vim.opt.clipboard = "unnamedplus"
+vim.opt.winborder = "rounded"
