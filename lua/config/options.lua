@@ -4,6 +4,7 @@ vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
 -- vim.cmd("cd ~/.config/nvim")
 
-vim.opt.number = true -- show line number
+-- vim.opt.number = true -- show line number
+vim.opt.relativenumber = true
 vim.opt.clipboard = "unnamedplus"
 vim.opt.winborder = "rounded"
