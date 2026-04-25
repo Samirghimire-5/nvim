@@ -11,7 +11,7 @@ return {
 
 			buf_options = {
 				buflisted = false,
-				bufhidden = "wipe",
+				bufhidden = "hide",
 			},
 
 			columns = { "icon" },
@@ -43,10 +43,10 @@ return {
 
 		-- Open Oil in current working directory
 		vim.keymap.set("n", "<leader>e", function()
-			require("oil").open_float(vim.fn.getcwd())
-		end, { desc = "Explorer float" })
+			require("oil").open_float()
+		end, { desc = "Parent dir float" })
 
-		-- Open oil in root directory
+		-- Open oil in current working directory
 		vim.keymap.set("n", "<leader>fe", function()
 			require("oil").open_float(vim.fn.getcwd())
 		end, { desc = "Explorer (cwd)" })
