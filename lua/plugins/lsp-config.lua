@@ -14,6 +14,10 @@ return {
 
 	{
 		"mason-org/mason-lspconfig.nvim",
+		dependencies = {
+			"mason-org/mason.nvim",
+			"neovim/nvim-lspconfig",
+		},
 		opts = {
 			ensure_installed = {
 				"lua_ls",
@@ -23,15 +27,12 @@ return {
 				"html",
 			},
 		},
-		dependencies = {
-			{ "mason-org/mason.nvim", opts = {} },
-			"neovim/nvim-lspconfig",
-		},
 	},
+
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
-      -- this below helps to add background color and rounded border in popups
+			-- UI (clean floating windows)
 			vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 				border = "rounded",
 				max_width = 80,
@@ -48,47 +49,33 @@ return {
 				},
 			})
 
-			-- Set colors for floating windows (hover popup)
-			vim.cmd([[
-        highlight NormalFloat guibg=#1e1e2e guifg=#e5e7eb
-        highlight FloatBorder guifg=#89b4fa guibg=#1e1e2e
-        highlight FloatTitle guifg=#f9fafb guibg=#1e1e2e gui=bold
-      ]])
+			-- Float colors
+			vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#1e1e2e", fg = "#e5e7eb" })
+			vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#89b4fa", bg = "#1e1e2e" })
+			vim.api.nvim_set_hl(0, "FloatTitle", { fg = "#f9fafb", bg = "#1e1e2e", bold = true })
 
-			-- CAPABILITIES:
-			-- This tells the Language Servers what Neovim is capable of.
-			-- By adding 'cmp_nvim_lsp', we tell the server: "Hey, I have a completion engine,
-			-- so send me snippet and popup data!"
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			-- Capabilities (blink compatible)
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-			-- LUA SPECIFIC CONFIG:
-			-- We configure 'lua_ls' separately because it needs to know that 'vim'
-			-- is a global variable (otherwise it shows "undefined global" warnings).
-			vim.lsp.config("lua_ls", {
-				capabilities = capabilities,
-				settings = {
-					Lua = {
-						diagnostics = {
-							globals = { "vim" },
+			-- Servers
+			local servers = {
+				lua_ls = {
+					settings = {
+						Lua = {
+							diagnostics = { globals = { "vim" } },
 						},
 					},
 				},
-			})
+				ts_ls = {},
+				pyright = {},
+				cssls = {},
+				html = {},
+			}
 
-			-- GENERAL SERVER CONFIG:
-			-- A loop to apply the same basic capabilities to all other servers.
-			local servers = { "ts_ls", "pyright", "cssls", "html" }
-
-			for _, server in ipairs(servers) do
-				vim.lsp.config(server, {
-					capabilities = capabilities,
-				})
-			end
-
-			-- Finally, enable them all
-			local all_servers = { "lua_ls", "ts_ls", "pyright", "cssls", "html" }
-			for _, server in ipairs(all_servers) do
-				vim.lsp.enable(server)
+			for name, config in pairs(servers) do
+				config.capabilities = capabilities
+				vim.lsp.config(name, config)
+				vim.lsp.enable(name)
 			end
 
 			-- Keymaps

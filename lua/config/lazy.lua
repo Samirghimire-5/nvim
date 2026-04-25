@@ -24,14 +24,6 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-vim.api.nvim_create_autocmd("VimEnter", {
-	callback = function(data)
-		if vim.fn.isdirectory(data.file) == 1 then
-			require("neo-tree.command").execute({ toggle = true, dir = data.file })
-		end
-	end,
-})
-
 -- Setup lazy.nvim
 require("lazy").setup({
 	spec = {

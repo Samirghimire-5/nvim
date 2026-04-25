@@ -3,3 +3,6 @@ lazy-lock.json
 .plugin/
 .cache/
 .undo/
+
+# old plugins
+lua/oldPlugins/

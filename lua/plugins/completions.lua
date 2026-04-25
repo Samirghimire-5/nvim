@@ -1,85 +1,149 @@
 return {
 	{
-		"hrsh7th/cmp-nvim-lsp",
-	},
-	{
-		"L3MON4D3/LuaSnip", -- snippet engine
+		"saghen/blink.cmp",
+		version = "1.*",
 		dependencies = {
-			"saadparwaiz1/cmp_luasnip", -- snippet completion engine
+			"L3MON4D3/LuaSnip",
 			"rafamadriz/friendly-snippets",
 		},
-	},
-	{
-		"hrsh7th/nvim-cmp",
-		dependencies = {
-			"windwp/nvim-autopairs",
-		},
-		config = function()
-			local cmp = require("cmp")
-			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-			local luasnip = require("luasnip")
 
+		config = function(_, opts)
+			-- Ensure LuaSnip is fully loaded and filetypes are mapped
+			local ls = require("luasnip")
+			ls.filetype_extend("javascriptreact", { "javascript" })
+			ls.filetype_extend("typescript", { "javascript" })
+			ls.filetype_extend("typescriptreact", { "typescript", "javascriptreact", "javascript" })
+
+			-- Load snippets from friendly-snippets
 			require("luasnip.loaders.from_vscode").lazy_load()
 
-			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done()) -- handles completion confirmations
-
-			-- helper function
-			local has_words_before = function()
-				unpack = unpack or table.unpack
-				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-				return col ~= 0
-					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-			end
-
-			cmp.setup({
-				snippet = {
-					-- REQUIRED - you must specify a snippet engine
-					expand = function(args)
-						require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
-					end,
-				},
-				window = {
-					completion = cmp.config.window.bordered(),
-					documentation = cmp.config.window.bordered(),
-				},
-				mapping = cmp.mapping.preset.insert({
-					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
-					["<C-Space>"] = cmp.mapping.complete(),
-					["<C-e>"] = cmp.mapping.abort(),
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
-
-					-- Tab mapping
-					["<Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_next_item()
-						elseif luasnip.expand_or_jumpable() then
-							luasnip.expand_or_jump()
-						elseif has_words_before() then
-							cmp.complete()
-						else
-							fallback()
-						end
-					end, { "i", "s" }),
-
-					-- Shift-Tab mapping
-					["<S-Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_prev_item()
-						elseif luasnip.jumpable(-1) then
-							luasnip.jump(-1)
-						else
-							fallback()
-						end
-					end, { "i", "s" }),
-				}),
-				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					{ name = "luasnip" }, -- For luasnip users.
-				}, {
-					{ name = "buffer" },
-				}),
-			})
+			-- Start blink.cmp
+			require("blink.cmp").setup(opts)
 		end,
+
+		opts = {
+			-- 🔑 Keymaps
+			keymap = {
+				preset = "enter",
+				["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+				["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+			},
+
+			snippets = { preset = "luasnip" },
+
+			appearance = {
+				nerd_font_variant = "mono",
+			},
+
+			signature = {
+				enabled = true,
+				window = {
+					show_documentation = false,
+				},
+			},
+
+			completion = {
+				ghost_text = { enabled = true },
+				-- Removed invalid trigger key that might crash blink.cmp validation
+				trigger = {
+					show_on_trigger_character = true,
+				},
+
+				documentation = {
+					auto_show = true,
+					auto_show_delay_ms = 200,
+				},
+
+				menu = {
+					auto_show = true,
+					scrollbar = false,
+
+					draw = {
+						columns = {
+							{ "kind_icon" },
+							{ "label", gap = 1 },
+							{ "kind", gap = 1 },
+							{ "detail", gap = 1 },
+						},
+
+						components = {
+							detail = {
+								text = function(ctx)
+									-- ctx.item.detail usually contains the "Auto import from..." info
+									local detail = ctx.item.detail or ""
+									if detail ~= "" then
+										-- Shorten the text if it's too long
+										if #detail > 30 then
+											detail = detail:sub(1, 27) .. "..."
+										end
+										return detail
+									end
+									-- Fallback to source name if no detail exists
+									return "[" .. ctx.source_name .. "]"
+								end,
+								highlight = "BlinkCmpLabelDescription", -- Use the faded highlight group
+							},
+							kind_icon = {
+								text = function(ctx)
+									local icons = {
+										-- Languages
+										Javascript = "",
+										TypeScript = "",
+										React = "",
+										HTML = "",
+										CSS = "",
+										JSON = "",
+										Lua = "",
+
+										-- LSP kinds
+										Function = "λ",
+										Method = "∂",
+										Variable = "󰀫",
+										Field = "󰀫",
+										Property = "󰀫",
+										Class = "ﴯ",
+										Interface = "",
+										Module = "⌠",
+										Keyword = "k",
+										Constructor = "∑",
+										Enum = "τ",
+										EnumMember = "τ",
+										Snippet = "⊂",
+										Text = "τ",
+									}
+
+									return icons[ctx.kind] or ctx.kind_icon
+								end,
+							},
+
+							kind = {
+								text = function(ctx)
+									return ctx.kind
+								end,
+							},
+
+							source_name = {
+								text = function(ctx)
+									local map = {
+										lsp = "[LSP]",
+										buffer = "[Buffer]",
+										path = "[Path]",
+									}
+									return map[ctx.source_name] or ctx.source_name
+								end,
+							},
+						},
+					},
+				},
+			},
+
+			sources = {
+				default = { "lsp", "path", "buffer", "snippets" },
+			},
+
+			fuzzy = {
+				implementation = "prefer_rust_with_warning",
+			},
+		},
 	},
 }
