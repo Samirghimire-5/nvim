@@ -4,46 +4,59 @@ return {
 
 	config = function()
 		require("oil").setup({
+			default_file_explorer = true,
+			delete_to_trash = true,
+			skip_confirm_for_simple_edits = true,
+			prompt_save_on_select_new_entry = false,
+
+			buf_options = {
+				buflisted = false,
+				bufhidden = "wipe",
+			},
+
+			columns = { "icon" },
 			view_options = {
 				show_hidden = true,
 			},
-			columns = { "icon" },
 
+			-- ui
 			float = {
 				max_width = 0.8,
 				max_height = 0.7,
 				border = "rounded",
 			},
 
+			use_default_keymaps = true,
+
 			keymaps = {
-				["<Esc>"] = "actions.close", -- close oil
+				["<Esc>"] = "actions.close",
 				["q"] = "actions.close",
 
-				["<CR>"] = "actions.select", -- open file
-				["-"] = "actions.parent", -- go up
+				["<CR>"] = "actions.select",
+				["-"] = "actions.parent",
 
-				["gs"] = "actions.change_sort", -- sort files
-				["gx"] = "actions.open_external", -- open outside nvim
-				["g."] = "actions.toggle_hidden", -- toggle hidden files
+				["gs"] = "actions.change_sort",
+				["gx"] = "actions.open_external",
+				["g."] = "actions.toggle_hidden",
 			},
 		})
 
-		-- open explorer (cwd)
-		vim.keymap.set("n", "<leader>fe", function()
-			require("oil").open_float(vim.loop.cwd())
-		end, { desc = "Explorer (Oil float)" })
-
-		-- quick parent navigation
-		-- vim.keymap.set("n", "<leader>e", "<cmd>oil<CR>", { desc = "Parent directory" })
+		-- Open Oil in current working directory
 		vim.keymap.set("n", "<leader>e", function()
-			require("oil").open_float()
-		end, { desc = "Parent dir float" })
+			require("oil").open_float(vim.fn.getcwd())
+		end, { desc = "Explorer float" })
 
-		-- buffer navigation (neo-tree replacement feel)
+		-- Open oil in root directory
+		vim.keymap.set("n", "<leader>fe", function()
+			require("oil").open_float(vim.fn.getcwd())
+		end, { desc = "Explorer (cwd)" })
+
+		-- Buffer navigation
 		vim.keymap.set("n", "<S-l>", ":bnext<CR>", { desc = "Next buffer" })
 		vim.keymap.set("n", "<S-h>", ":bprev<CR>", { desc = "Prev buffer" })
 		vim.keymap.set("n", "<leader>bb", "<C-^>", { desc = "Last buffer" })
 
+		-- Save
 		vim.keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save / Apply changes" })
 	end,
 }
