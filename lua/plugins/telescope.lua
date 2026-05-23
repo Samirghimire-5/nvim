@@ -18,6 +18,8 @@ return {
 						i = {
 							["<C-j>"] = actions.move_selection_next,
 							["<C-k>"] = actions.move_selection_previous,
+							["<C-v>"] = actions.select_vertical,
+							["<C-x>"] = actions.select_horizontal,
 							["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 							["<Esc>"] = actions.close,
 						},

@@ -31,8 +31,16 @@ return {
 			keymaps = {
 				["<Esc>"] = "actions.close",
 				["q"] = "actions.close",
+				["<C-c>"] = { "actions.close", mode = "n" },
 
 				["<CR>"] = "actions.select",
+				-- Split-open helpers (keep Ctrl-h/j/k/l free for window navigation)
+				["s"] = { "actions.select", opts = { horizontal = true } },
+				["v"] = { "actions.select", opts = { vertical = true } },
+				["t"] = { "actions.select", opts = { tab = true } },
+				["p"] = "actions.preview",
+				["<C-h>"] = false,
+				["<C-l>"] = false,
 				["-"] = "actions.parent",
 
 				["gs"] = "actions.change_sort",

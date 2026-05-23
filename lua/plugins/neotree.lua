@@ -81,10 +81,10 @@ return {
 			-- increase/decrease sidebar width
 			vim.keymap.set("n", "<leader>tw", function()
 				resize_neotree(5)
-			end)
+			end, { desc = "Neo-tree widen" })
 			vim.keymap.set("n", "<leader>tn", function()
 				resize_neotree(-5)
-			end)
+			end, { desc = "Neo-tree narrow" })
 
 			-- if only Neo-tree remains → exit Neovim
 			vim.api.nvim_create_autocmd("BufEnter", {
