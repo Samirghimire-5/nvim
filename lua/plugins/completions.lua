@@ -8,6 +8,8 @@ return {
 		},
 
 		config = function(_, opts)
+			local cmp = require("blink.cmp")
+
 			-- Ensure LuaSnip is fully loaded and filetypes are mapped
 			local ls = require("luasnip")
 			ls.filetype_extend("javascriptreact", { "javascript" })
@@ -18,13 +20,27 @@ return {
 			require("luasnip.loaders.from_vscode").lazy_load()
 
 			-- Start blink.cmp
-			require("blink.cmp").setup(opts)
+			cmp.setup(opts)
+
+			-- Safety net: always hide completion/signature floats when leaving insert/buffer
+			vim.api.nvim_create_autocmd({ "InsertLeave", "BufLeave" }, {
+				callback = function()
+					pcall(function()
+						cmp.hide()
+						cmp.hide_documentation()
+						cmp.hide_signature()
+					end)
+				end,
+			})
 		end,
 
 		opts = {
 			-- 🔑 Keymaps
 			keymap = {
 				preset = "enter",
+				-- More reliable "close" behavior when previews/signature are active
+				["<C-q>"] = { "cancel", "fallback" },
+				["<Esc>"] = { "cancel", "fallback" },
 				["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
 				["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
 			},
@@ -44,6 +60,15 @@ return {
 
 			completion = {
 				ghost_text = { enabled = true },
+
+				-- The `enter` keymap preset recommends disabling preselect to avoid odd
+				-- “stuck menu / preview” behavior.
+				list = {
+					selection = {
+						preselect = false,
+						auto_insert = false,
+					},
+				},
 				-- Removed invalid trigger key that might crash blink.cmp validation
 				trigger = {
 					show_on_trigger_character = true,

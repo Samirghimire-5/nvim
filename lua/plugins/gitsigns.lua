@@ -16,26 +16,28 @@ return {
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
 
-				local function map(mode, lhs, rhs)
-					vim.keymap.set(mode, lhs, rhs, { buffer = bufnr })
+				local function map(mode, lhs, rhs, desc)
+					vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
 				end
 
 				-- 1.) hunk changes (block of changes)
-				-- navigate changes
-				map("n", "<leader>hn", gs.next_hunk)
-				map("n", "<leader>hp", gs.prev_hunk)
-				-- Preview / stage / discard
-				map("n", "<leader>gp", gs.preview_hunk) -- g = git
-				map("n", "<leader>hs", gs.stage_hunk) -- hs - cause gs command already does git status
-				map("n", "<leader>hr", gs.reset_hunk)
+				-- chunk navigation
+					map("n", "<leader>cn", gs.next_hunk, "Next Change")
+					map("n", "<leader>cp", gs.prev_hunk, "Prev Change")
 
-				-- 2.) line changes (single line change)
-				map("n", "<leader>rl", function() -- reset single line
-					gs.reset_hunk({ vim.fn.line("."), vim.fn.line(".") })
-				end)
-				map("v", "<leader>rl", function() -- reset selected lines
-					gs.reset_hunk({ vim.fn.line("v"), vim.fn.line(".") })
-				end)
+					-- chunk actions
+					map("n", "<leader>cv", gs.preview_hunk, "Preview Change -- change preview")
+					map("n", "<leader>cs", gs.stage_hunk, "Stage Change")
+					map("n", "<leader>cr", gs.reset_hunk, "Reset Change")
+
+					-- line actions
+					map("n", "<leader>clr", function()
+						gs.reset_hunk({ vim.fn.line("."), vim.fn.line(".") })
+					end, "Reset Line")
+
+					map("v", "<leader>csr", function()
+						gs.reset_hunk({ vim.fn.line("v"), vim.fn.line(".") })
+					end, "Reset Selected lines")
 			end,
 		})
 

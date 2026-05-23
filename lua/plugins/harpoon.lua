@@ -19,35 +19,35 @@ return {
 		local list = harpoon:list()
 
 		-- mark files
-		vim.keymap.set("n", "<leader>a", function()
+		vim.keymap.set("n", "<leader>ha", function()
 			harpoon:list():add()
 		end, { desc = "Harpoon add file" })
 
 		-- Toggle UI menu
-		vim.keymap.set("n", "<leader>h", function()
+		vim.keymap.set("n", "<leader>hh", function()
 			harpoon.ui:toggle_quick_menu(list)
 		end, { desc = "Harpoon menu" })
 
 		-- Quick jump
 		vim.keymap.set("n", "<leader>1", function()
 			list:select(1)
-		end)
+		end, { desc = "Harpoon file 1" })
 		vim.keymap.set("n", "<leader>2", function()
 			list:select(2)
-		end)
+		end, { desc = "Harpoon file 2" })
 		vim.keymap.set("n", "<leader>3", function()
 			list:select(3)
-		end)
+		end, { desc = "Harpoon file 3" })
 		vim.keymap.set("n", "<leader>4", function()
 			list:select(4)
-		end)
+		end, { desc = "Harpoon file 4" })
 
 		-- Cycle
-		vim.keymap.set("n", "<leader>hn", function()
+		vim.keymap.set("n", "<leader>hf", function()
 			list:next()
-		end)
-		vim.keymap.set("n", "<leader>hp", function()
+		end, { desc = "Harpoon next" })
+		vim.keymap.set("n", "<leader>hb", function()
 			list:prev()
-		end)
+		end, { desc = "Harpoon previous" })
 	end,
 }
