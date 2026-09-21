@@ -33,14 +33,19 @@ return {
 		"neovim/nvim-lspconfig",
 		config = function()
 			-- UI (clean floating windows)
-			vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-				border = "rounded",
-				max_width = 80,
-				max_height = 20,
-			})
+			vim.lsp.handlers["textDocument/hover"] = function(err, result, ctx, config)
+				config = config or {}
+				config.border = "rounded"
+				config.max_width = 80
+				config.max_height = 20
+				return vim.lsp.handlers.hover(err, result, ctx, config)
+			end
 
-			vim.lsp.handlers["textDocument/signatureHelp"] =
-				vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+			vim.lsp.handlers["textDocument/signatureHelp"] = function(err, result, ctx, config)
+				config = config or {}
+				config.border = "rounded"
+				return vim.lsp.handlers.signature_help(err, result, ctx, config)
+			end
 
 			vim.diagnostic.config({
 				float = {
